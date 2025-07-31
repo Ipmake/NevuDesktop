@@ -1,6 +1,6 @@
 {
   "name": "nevu-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nevu Desktop - The modern Plex UI alternative for desktop",
   "main": "build/main.js",
   "homepage": "https://github.com/Ipmake/Nevu",
