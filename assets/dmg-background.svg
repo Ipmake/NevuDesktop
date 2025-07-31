@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="660" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1e2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#11111b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="660" height="400" fill="url(#bg)"/>
+  <text x="330" y="200" text-anchor="middle" fill="#cdd6f4" font-family="Arial, sans-serif" font-size="24" font-weight="bold">Nevu Desktop</text>
+  <text x="330" y="230" text-anchor="middle" fill="#a6adc8" font-family="Arial, sans-serif" font-size="14">Drag to Applications folder to install</text>
+</svg>

@@ -1,0 +1,166 @@
+{
+  "name": "nevu-desktop",
+  "version": "1.0.0",
+  "description": "Nevu Desktop - The modern Plex UI alternative for desktop",
+  "main": "build/main.js",
+  "homepage": "https://github.com/Ipmake/Nevu",
+  "author": {
+    "name": "ipmake.dev",
+    "email": "contact@ipmake.dev"
+  },
+  "license": "GPL-3.0",
+  "scripts": {
+    "start": "electron .",
+    "dev": "npm run build && electron . --dev",
+    "build": "npm run build:renderer && npm run build:webview && npx tsc",
+    "build:renderer": "webpack --mode production",
+    "build:webview": "webpack --config webpack.webview.js",
+    "generate-icons": "bash scripts/generate-icons.sh",
+    "prebuild": "npm run generate-icons",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "dev.ipmake.nevudesktop",
+    "productName": "Nevu",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "build/main.js",
+      "build/preload.js", 
+      "build/webview-preload.js",
+      "build/renderer/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraMetadata": {
+      "main": "build/main.js"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "publisherName": "ipmake.dev"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.entertainment"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "AudioVideo"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "dmg": {
+      "title": "Nevu ${version}",
+      "icon": "assets/icon.icns",
+      "background": "assets/dmg-background.png",
+      "window": {
+        "width": 660,
+        "height": 400
+      },
+      "contents": [
+        {
+          "x": 180,
+          "y": 170,
+          "type": "file"
+        },
+        {
+          "x": 480,
+          "y": 170,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@types/udp-discovery": "^2.0.4",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "^7.1.2",
+    "electron": "^32.0.1",
+    "electron-builder": "^25.0.5",
+    "html-webpack-plugin": "^5.6.3",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource-variable/inter": "^5.2.6",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.3.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "udp-discovery": "^2.0.2"
+  }
+}

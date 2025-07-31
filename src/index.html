@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nevu Desktop</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121216;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-app-region: no-drag;
+        }
+        
+        #root {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Loading styles */
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #121216;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #2A2A3E;
+            border-top: 3px solid #6366F1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        .loading-text {
+            color: #B4B4C7;
+            font-size: 14px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide scrollbars but keep functionality */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3A3A4E;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4A4A5E;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <!-- Loading screen while React app loads -->
+        <div class="loading-container" id="loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Nevu Desktop...</div>
+        </div>
+    </div>
+
+    <script>
+        // Hide loading screen once React app mounts
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const loading = document.getElementById('loading');
+                if (loading) {
+                    loading.style.opacity = '0';
+                    loading.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => {
+                        loading.remove();
+                    }, 300);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

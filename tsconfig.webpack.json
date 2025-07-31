@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.renderer.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/index.tsx",
+    "src/App.tsx", 
+    "src/components/**/*",
+    "src/theme.ts",
+    "src/types.ts",
+    "src/types/global.d.ts"
+  ]
+}
