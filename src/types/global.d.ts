@@ -7,6 +7,7 @@ declare global {
   interface Window {
     electronAPI: {
       getPlatform: () => Promise<PlatformInfo>;
+      getDeviceName: () => Promise<string>;
       getWebViewPreloadPath: () => Promise<string>;
       getDiscoveredServers: () => Promise<ServerInfo[]>;
       getSettings: () => Promise<Settings>;
@@ -21,12 +22,19 @@ declare global {
       resetServerUrl: () => Promise<boolean>;
       resetAllSettings: () => Promise<boolean>;
       refreshDiscovery: () => Promise<boolean>;
+      // Auto updater functions
+      checkForUpdates: () => Promise<boolean>;
+      downloadUpdate: () => Promise<boolean>;
+      installUpdate: () => Promise<boolean>;
+      getUpdateInfo: () => Promise<{ version: string; isUpdateAvailable: boolean; isUpdateDownloaded: boolean }>;
+      // Event listeners
       onServerDiscovered: (callback: (server: ServerInfo) => void) => () => void;
       onServerRemoved: (callback: (url: string) => void) => () => void;
       onDiscoveryCleared: (callback: () => void) => () => void;
       onSettingsReset: (callback: () => void) => () => void;
       onServerUrlReset: (callback: () => void) => () => void;
       onServerUrlChanged: (callback: (url: string) => void) => () => void;
+      onUpdateProgress: (callback: (progress: { percent: number; transferred: number; total: number }) => void) => () => void;
     };
   }
 }

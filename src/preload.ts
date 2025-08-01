@@ -37,12 +37,19 @@ interface DiscoveryAPI {
   resetServerUrl: () => Promise<boolean>;
   resetAllSettings: () => Promise<boolean>;
   refreshDiscovery: () => Promise<boolean>;
+  // Auto updater functions
+  checkForUpdates: () => Promise<boolean>;
+  downloadUpdate: () => Promise<boolean>;
+  installUpdate: () => Promise<boolean>;
+  getUpdateInfo: () => Promise<{ version: string; isUpdateAvailable: boolean; isUpdateDownloaded: boolean }>;
   onServerDiscovered: (callback: (server: ServerInfo) => void) => () => void;
   onServerRemoved: (callback: (url: string) => void) => () => void;
   onDiscoveryCleared: (callback: () => void) => () => void;
   onSettingsReset: (callback: () => void) => () => void;
   onServerUrlReset: (callback: () => void) => () => void;
   onServerUrlChanged: (callback: (url: string) => void) => () => void;
+  // Update event listeners
+  onUpdateProgress: (callback: (progress: { percent: number; transferred: number; total: number }) => void) => () => void;
 }
 
 const api: DiscoveryAPI = {
@@ -62,6 +69,11 @@ const api: DiscoveryAPI = {
   resetServerUrl: () => ipcRenderer.invoke('reset-server-url'),
   resetAllSettings: () => ipcRenderer.invoke('reset-all-settings'),
   refreshDiscovery: () => ipcRenderer.invoke('refresh-discovery'),
+  // Auto updater implementations
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  downloadUpdate: () => ipcRenderer.invoke('download-update'),
+  installUpdate: () => ipcRenderer.invoke('install-update'),
+  getUpdateInfo: () => ipcRenderer.invoke('get-update-info'),
   onServerDiscovered: (callback: (server: ServerInfo) => void) => {
     const listener = (event: Electron.IpcRendererEvent, server: ServerInfo) => callback(server);
     ipcRenderer.on('server-discovered', listener);
@@ -91,6 +103,11 @@ const api: DiscoveryAPI = {
     const listener = () => callback();
     ipcRenderer.on('discovery-cleared', listener);
     return () => ipcRenderer.removeListener('discovery-cleared', listener);
+  },
+  onUpdateProgress: (callback: (progress: { percent: number; transferred: number; total: number }) => void) => {
+    const listener = (event: Electron.IpcRendererEvent, progress: { percent: number; transferred: number; total: number }) => callback(progress);
+    ipcRenderer.on('update-progress', listener);
+    return () => ipcRenderer.removeListener('update-progress', listener);
   }
 };
 

@@ -49,17 +49,22 @@ jobs:
 
       - name: Build distributables (Windows)
         if: matrix.os == 'windows-latest'
-        run: npm run dist:win
+        run: npm run publish:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build distributables (macOS)
         if: matrix.os == 'macos-latest'
-        run: npm run dist:mac
+        run: npm run publish:mac
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build distributables (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: npm run dist:linux
+        run: npm run publish:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Windows artifacts
         if: matrix.os == 'windows-latest'

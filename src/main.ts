@@ -37,8 +37,86 @@ let settingsWindow: BrowserWindow | null = null;
 let discoveredServers: ServerInfo[] = [];
 let discovery: Discovery | null = null;
 
-// Auto updater events
-autoUpdater.checkForUpdatesAndNotify();
+// Configure auto updater
+autoUpdater.autoDownload = false; // Don't auto-download, ask user first
+autoUpdater.autoInstallOnAppQuit = true; // Install on quit if update is ready
+
+// Auto updater event handlers
+autoUpdater.on('checking-for-update', () => {
+  console.log('Checking for update...');
+});
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Update available:', info.version);
+  if (mainWindow) {
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      title: 'Update Available',
+      message: `A new version (${info.version}) is available!`,
+      detail: 'Would you like to download and install it now? The app will restart automatically.',
+      buttons: ['Download & Install', 'Later'],
+      defaultId: 0,
+      cancelId: 1
+    }).then((result) => {
+      if (result.response === 0) {
+        autoUpdater.downloadUpdate();
+      }
+    });
+  }
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Update not available:', info.version);
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('Error in auto-updater:', err);
+  if (mainWindow) {
+    dialog.showErrorBox('Update Error', `Error checking for updates: ${err.message}`);
+  }
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  const percent = Math.round(progressObj.percent);
+  console.log(`Download progress: ${percent}%`);
+  
+  if (mainWindow) {
+    mainWindow.setProgressBar(progressObj.percent / 100);
+    mainWindow.webContents.send('update-progress', {
+      percent: percent,
+      transferred: progressObj.transferred,
+      total: progressObj.total
+    });
+  }
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  console.log('Update downloaded:', info.version);
+  
+  if (mainWindow) {
+    mainWindow.setProgressBar(-1); // Remove progress bar
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      title: 'Update Ready',
+      message: `Update ${info.version} has been downloaded.`,
+      detail: 'The update will be installed when you restart the application. Would you like to restart now?',
+      buttons: ['Restart Now', 'Later'],
+      defaultId: 0,
+      cancelId: 1
+    }).then((result) => {
+      if (result.response === 0) {
+        autoUpdater.quitAndInstall(false, true);
+      }
+    });
+  }
+});
+
+// Check for updates after app is ready
+function checkForUpdates() {
+  if (process.env.NODE_ENV !== 'development') {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
 // Single instance enforcement
 const gotTheLock = app.requestSingleInstanceLock();
@@ -275,6 +353,11 @@ function discoverServers(): void {
 app.whenReady().then(() => {
   createMainWindow();
   discoverServers();
+  
+  // Check for updates after a delay to ensure the app is fully loaded
+  setTimeout(() => {
+    checkForUpdates();
+  }, 3000);
 
   // Register global shortcuts
   globalShortcut.register('CmdOrCtrl+Shift+R', () => {
@@ -517,4 +600,32 @@ ipcMain.handle('refresh-discovery', () => {
   // Just rely on UDP discovery
   console.log('Discovery refreshed - relying on UDP discovery');
   return true;
+});
+
+// Auto updater IPC handlers
+ipcMain.handle('check-for-updates', () => {
+  if (process.env.NODE_ENV !== 'development') {
+    autoUpdater.checkForUpdates();
+  } else {
+    console.log('Update check skipped in development mode');
+  }
+  return true;
+});
+
+ipcMain.handle('download-update', () => {
+  autoUpdater.downloadUpdate();
+  return true;
+});
+
+ipcMain.handle('install-update', () => {
+  autoUpdater.quitAndInstall(false, true);
+  return true;
+});
+
+ipcMain.handle('get-update-info', () => {
+  return {
+    version: app.getVersion(),
+    isUpdateAvailable: false, // This would be set by the updater events
+    isUpdateDownloaded: false
+  };
 });
