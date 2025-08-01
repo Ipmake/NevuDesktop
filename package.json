@@ -1,6 +1,6 @@
 {
   "name": "nevu-desktop",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Nevu Desktop - The modern Plex UI alternative for desktop",
   "main": "build/main.js",
   "homepage": "https://github.com/Ipmake/Nevu",
@@ -68,8 +68,7 @@
           ]
         }
       ],
-      "icon": "assets/icon.ico",
-      "publisherName": "ipmake.dev"
+      "icon": "assets/icon.ico"
     },
     "mac": {
       "target": [
@@ -119,7 +118,11 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "displayLanguageSelector": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico"
     },
     "dmg": {
       "title": "Nevu ${version}",
