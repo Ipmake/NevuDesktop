@@ -22,6 +22,7 @@ export interface Settings {
 
 interface DiscoveryAPI {
   getPlatform: () => Promise<PlatformInfo>;
+  getDeviceName: () => Promise<string>;
   getWebViewPreloadPath: () => Promise<string>;
   getDiscoveredServers: () => Promise<ServerInfo[]>;
   getSettings: () => Promise<Settings>;
@@ -46,6 +47,7 @@ interface DiscoveryAPI {
 
 const api: DiscoveryAPI = {
   getPlatform: () => ipcRenderer.invoke('get-platform'),
+  getDeviceName: () => ipcRenderer.invoke('get-device-name'),
   getWebViewPreloadPath: () => ipcRenderer.invoke('get-webview-preload-path'),
   getDiscoveredServers: () => ipcRenderer.invoke('get-discovered-servers'),
   getSettings: () => ipcRenderer.invoke('get-settings'),

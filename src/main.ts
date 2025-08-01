@@ -5,6 +5,7 @@ import { Discovery } from 'udp-discovery';
 import * as path from 'path';
 import * as https from 'https';
 import * as http from 'http';
+import * as os from 'os';
 
 interface ServerInfo {
   name: string;
@@ -67,7 +68,7 @@ function checkServerHealth(url: string): Promise<boolean> {
       const options = {
         hostname: parsedUrl.hostname,
         port: parsedUrl.port || (isHttps ? 443 : 80),
-        path: '/api/status',
+        path: '/status',
         method: 'GET',
         timeout: 5000,
       };
@@ -401,6 +402,10 @@ ipcMain.handle('get-platform', () => {
     version: process.getSystemVersion(),
     appVersion: app.getVersion()
   };
+});
+
+ipcMain.handle('get-device-name', () => {
+  return os.hostname();
 });
 
 ipcMain.handle('get-webview-preload-path', () => {
