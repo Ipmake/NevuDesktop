@@ -66,37 +66,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Windows artifacts
-        if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-build
-          path: |
-            dist/*.exe
-            dist/*.msi
-            dist/latest.yml
-
-      - name: Upload macOS artifacts
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-build
-          path: |
-            dist/*.dmg
-            dist/*.zip
-            dist/latest-mac.yml
-
-      - name: Upload Linux artifacts
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build
-          path: |
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.rpm
-            dist/latest-linux.yml
-
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -106,24 +75,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-
-      - name: List downloaded files
-        run: find . -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" -o -name "*.zip"
-
-      - name: Upload Release Assets
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            windows-build/*.exe
-            macos-build/*.dmg
-            macos-build/*.zip
-            linux-build/*.AppImage
-            linux-build/*.deb
-            linux-build/*.rpm
           name: Nevu Desktop ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           draft: false
